@@ -130,4 +130,40 @@ Adjust `VISUALIZATION_CONFIG` in `array_randomizer.py`:
 - `figsize`, `dpi`, `strain_name_truncate`, `colormap`
 - `negative_color`, `inner_border_color`, `edge_border_color`, `font_size`, `save_format`
 
+### Interpreting Visualizations
+
+#### plot_plate
+- Grid orientation: rows labeled A.., columns 1..; origin is top-left (A1).
+- Fill colors: one unique color per strain; negatives are black; empty wells (if any) are white.
+- Borders: red = inner position (4 occupied cardinal neighbors); green = edge (≤3 neighbors).
+- Annotations: strain names truncated to `strain_name_truncate` characters; full identity is preserved in data/exports.
+- Legend: shows strain colors (first N items), plus a black swatch for negatives.
+
+Use cases: quick QC of per-plate content, spotting clustering, verifying negative placement and edge/inner mix.
+
+#### plot_negative_uniqueness
+- Panel A (frequency heatmap): counts of how many times each position was used as a negative across replicates (for the first plate displayed). Expected values are 0 or 1; any value >1 indicates a violation.
+- Panel B (row/column usage matrices): per-replicate counts of which row indices and column indices hosted negatives (aggregated across plates). Within a single plate, rows/cols are unique; across multiple plates, the same row/col index can appear more than once—this is expected.
+- Panel C (spatial scatter): negative positions per replicate (first plate displayed). Different colors per replicate. Look for separation across replicates—no overlaps and no 8-connected adjacency relative to earlier replicates.
+
+Use cases: verify uniqueness across replicates, check row/column diversity, and confirm 8-connectivity spacing across replicates.
+
+#### plot_alternation_pairs (stub)
+- Displays a textual summary including the alternation score between two replicates for selected plates (or all).
+- Alternation score = fraction of strains that flip type (edge ↔ inner) between the two replicates.
+
+Use cases: quantify how well alternation is achieved; higher is better (target ≥ 0.7).
+
+#### plot_strain_journey (stub)
+- Textual timeline of a single strain’s positions across replicates, including `(plate_id, well_id)`.
+- Highlights whether the strain stayed on the same plate (it should).
+
+Use cases: track a specific strain, confirm plate consistency, inspect alternation pattern across replicates.
+
+#### plot_verification_dashboard (stub)
+- Compact textual dashboard summarizing: alternation scores, position type distribution, neighbor count histogram, strain‑plate assignment breadth, negative spacing overview, and randomization entropy.
+- Intended as a one‑look QC; visual charts can be extended from this scaffold.
+
+Tip: any figure can be saved via `fig.savefig('name.png', dpi=150)`.
+
 
